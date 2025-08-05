@@ -1,3 +1,71 @@
+// ...existing code...
+// Função utilitária para baixar arquivo
+function downloadFile(filename: string, blob: Blob) {
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Exporta todas as imagens do slideshow em um ZIP
+async function exportImages() {
+  const slideDivs = slideshow.querySelectorAll('.slide');
+  if (slideDivs.length === 0) {
+    alert('Nenhuma imagem para exportar!');
+    return;
+  }
+  // Carrega JSZip dinamicamente
+  const JSZip = (await import('jszip')).default;
+  const zip = new JSZip();
+  let idx = 1;
+  for (const slide of slideDivs) {
+    const img = slide.querySelector('img');
+    const caption = slide.querySelector('div');
+    if (img && img.src.startsWith('data:image')) {
+      // Cria canvas para compor imagem + texto
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      // Tamanhos baseados na imagem e espaço para texto
+      const imgEl = new window.Image();
+      imgEl.src = img.src;
+      await new Promise((resolve) => { imgEl.onload = resolve; });
+      const width = imgEl.width;
+      const height = imgEl.height;
+      const text = caption ? (caption.innerText || caption.textContent || '') : '';
+      const fontSize = 24;
+      const padding = 24;
+      canvas.width = width;
+      canvas.height = height + fontSize * 2 + padding;
+      // Fundo branco
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Desenha imagem
+      ctx.drawImage(imgEl, 0, 0, width, height);
+      // Desenha texto
+      ctx.font = `${fontSize}px 'Comic Sans MS', 'Arial', sans-serif`;
+      ctx.fillStyle = '#3a4a5a';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      // Quebra de linha simples
+      const lines = text.split(/\r?\n/);
+      let y = height + padding / 2;
+      for (const line of lines) {
+        ctx.fillText(line, width / 2, y);
+        y += fontSize + 4;
+      }
+      // Salva como PNG
+      const composedBase64 = canvas.toDataURL('image/png').split(',')[1];
+      zip.file(`patinho${idx}.png`, composedBase64, {base64: true});
+      idx++;
+    }
+  }
+  const content = await zip.generateAsync({type: 'blob'});
+  downloadFile('patinhos.zip', content);
+}
+
+document.getElementById('export-images')?.addEventListener('click', exportImages);
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
