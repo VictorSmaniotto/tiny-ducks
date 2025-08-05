@@ -1,0 +1,27 @@
+<head>
+  <meta charset="UTF-8">
+</head>
+<script type="importmap">
+  {
+    "imports": {
+      "@google/genai": "https://esm.sh/@google/genai@^0.7.0",
+      "marked": "https://esm.sh/marked@^15.0.7"
+    }
+  }
+</script>
+<div class="container">
+  <h1>Explique coisas com muitos patinhos pequenos</h1>
+  <p>Exemplos:</p>
+  <ul id="examples">
+    <li>Explique como funcionam as redes neurais.</li>
+    <li>Explique como funciona Matrix.</li>
+    <li>Explique o que é espaguetificação.</li>
+  </ul>
+  <p>ou digite seu próprio pedido:</p>
+  <textarea id="input" placeholder="Digite um tema e pressione Enter."></textarea>
+  <div id="output"></div>
+  <div id="error" hidden></div>
+  <div id="slideshow" hidden></div>
+</div>
+<link rel="stylesheet" href="/index.css">
+<script type="module" src="/index.tsx"></script>
