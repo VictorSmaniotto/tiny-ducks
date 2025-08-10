@@ -1,4 +1,10 @@
-// ...existing code...
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+import {GoogleGenAI, Modality} from '@google/genai';
+import {marked} from 'marked';
+
 // Função utilitária para baixar arquivo
 function downloadFile(filename: string, blob: Blob) {
   const link = document.createElement('a');
@@ -66,13 +72,6 @@ async function exportImages() {
 }
 
 document.getElementById('export-images')?.addEventListener('click', exportImages);
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import {GoogleGenAI, Modality} from '@google/genai';
-import {marked} from 'marked';
 
 const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
 
